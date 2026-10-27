@@ -2,6 +2,10 @@
 
 Crawler và dashboard lấy số phiếu công khai từ https://binhchon.khoahoctre.com.vn/.
 
+## Phòng kiểm thử
+
+Chọn **Kiểm thử** trên dashboard hoặc mở `/testing/`. Có bản mô phỏng chạy ngay trong trình duyệt và ô nhập URL website test để điền sau. Có thể chọn đề tài, số người dùng/phiếu mô phỏng, theo dõi tiến độ và dừng. Xem [cách dùng và giao thức môi trường test](../TEST_ENVIRONMENT.md). Kết nối thực tế cần đối chiếu API khi URL được công bố.
+
 ## Deploy Vercel
 
 Đọc [hướng dẫn deploy](../DEPLOY_VERCEL.md). Khi import repo, có thể giữ **Root Directory trống hoặc `.`**, **Framework Preset = Other**. Cấu hình ở gốc repo sẽ build giao diện và hai API. Nếu đã chọn **Root Directory = `vote-dashboard`**, vẫn giữ được cách này: thư mục ứng dụng cũng có cấu hình riêng. Cả hai cách đều dùng build `npm run build:vercel`, output `public`, Fluid compute và giới hạn 300 giây cho API. Runtime Node.js 22.x được chọn trong `package.json`. **Không cần Environment Variables.**

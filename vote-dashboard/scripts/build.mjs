@@ -1,6 +1,10 @@
-import { mkdir, copyFile } from 'node:fs/promises';
+import { mkdir, copyFile, readFile, writeFile } from 'node:fs/promises';
 await mkdir('dist/server', { recursive: true });
 await mkdir('dist/.openai', { recursive: true });
-await copyFile('worker/index.js', 'dist/server/index.js');
+const source = await readFile('worker/index.js', 'utf8');
+const kit = await readFile('testing/test-kit.mjs', 'utf8');
+const kitImport = "import { TEST_HTML } from '../testing/test-kit.mjs';";
+if (!source.includes(kitImport) || /^import\s/m.test(kit)) throw new Error('The Worker build expects one self-contained test-kit module.');
+await writeFile('dist/server/index.js', source.replace(kitImport, () => kit.replace(/^export /gm, '')));
 await copyFile('.openai/hosting.json', 'dist/.openai/hosting.json');
 console.log('Built dist/server/index.js');

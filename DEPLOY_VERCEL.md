@@ -42,6 +42,7 @@ Không thêm `PORT`, `API_KEY`, `DATABASE_URL` hay `TOKEN`. Trang nguồn dùng 
 | --- | --- |
 | `/` | Dashboard tiếng Việt |
 | `/favicon.svg` | Biểu tượng ứng dụng |
+| `/testing/` | Phòng kiểm thử mô phỏng với ô nhập URL môi trường test riêng |
 | `/api/competitions` | JSON danh sách cuộc thi |
 | `/api/snapshot?competition=eureka-2026&refresh=1` | JSON toàn bộ đề tài, lĩnh vực, số phiếu và thời điểm lấy dữ liệu |
 

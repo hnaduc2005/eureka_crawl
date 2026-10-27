@@ -30,6 +30,9 @@ test('Vercel build from ' + mode + ' produces the dashboard and favicon without 
   assert.match(script, /\/api\/competitions/);
   assert.match(script, /\/api\/snapshot\?competition=/);
   assert.match(await readFile(join(directory, 'favicon.svg'), 'utf8'), /<svg/);
+  const testPage = await readFile(join(directory, 'testing', 'index.html'), 'utf8');
+  new vm.Script(testPage.match(/<script>([\s\S]*?)<\/script>/)[1]);
+  assert.match(testPage, /Phòng kiểm thử/);
   assert.equal(network.mock.callCount(), 0);
 });
 }

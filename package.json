@@ -10,6 +10,7 @@
     "build": "npm run build:vercel",
     "build:vercel": "node scripts/build-vercel.mjs",
     "test": "node --test vote-dashboard/tests/*.test.mjs",
+    "test:environment": "node vote-dashboard/scripts/test-environment.mjs",
     "crawl": "npm --prefix vote-dashboard run crawl"
   }
 }
