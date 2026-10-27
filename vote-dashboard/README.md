@@ -2,6 +2,12 @@
 
 Crawler và dashboard lấy số phiếu công khai từ https://binhchon.khoahoctre.com.vn/.
 
+## Deploy Vercel
+
+Đọc [hướng dẫn deploy](../DEPLOY_VERCEL.md). Khi import repo, chọn **Root Directory = `vote-dashboard`**, **Framework Preset = Other**. File `vercel.json` đã đặt build `npm run build:vercel`, output `public`, Fluid compute và giới hạn 300 giây cho API. Runtime Node.js 22.x được chọn trong `package.json`. **Không cần Environment Variables.**
+
+`api/competitions.js` và `api/snapshot.js` là entrypoint của Vercel. Build tạo giao diện từ cùng nguồn `worker/index.js`, không gọi trang nguồn khi build. Cache server nằm trong bộ nhớ từng instance; dữ liệu không lưu thành file trên Vercel. Các file JSON/CSV trong `data/` chỉ được tạo khi chạy crawler riêng trên máy.
+
 ## Chạy tại máy
 
 Cần Node.js 22 trở lên, không cần cài thêm thư viện.
@@ -36,10 +42,11 @@ Lưu `data/eureka-2026.json` và `data/eureka-2026.csv`. Chỉ gọi API GET cô
 
 ```powershell
 npm test
+npm run build:vercel
 npm run build
 npm run validate
 ```
 
-Backend nằm trong `worker/index.js`, dùng chung cho máy chủ Node cục bộ và Cloudflare Worker. HTML/CSS/JS được nhúng trực tiếp, không dùng CDN. Bản build gồm `dist/server/index.js` và `.openai/hosting.json`.
+Backend nằm trong `worker/index.js`, dùng chung cho máy chủ Node cục bộ, Vercel Functions và Cloudflare Worker. HTML/CSS/JS được nhúng trực tiếp, không dùng CDN. `npm run build:vercel` tạo `public/` để Vercel phục vụ giao diện; `npm run build` tạo bản Worker cũ trong `dist/`.
 
 Nguồn API đã xác minh ngày 27/10/2026: `GET /api/competitions?all=true`, `GET /api/competitions/{id}`, `GET /api/c/{id}/categories`, `GET /api/c/{id}/entries?page=1&pageSize=100`. Trang nguồn giới hạn 100 đề tài/trang. Số phiếu được đọc ở các thời điểm khác nhau trong quá trình lấy dữ liệu, không phải ảnh chụp đồng thời tuyệt đối.

@@ -1,0 +1,8 @@
+.openai/
+data/
+dist/
+tests/
+*.log
+*.tar.gz
+.env
+.env.*.local
