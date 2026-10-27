@@ -24,7 +24,7 @@ Mở http://127.0.0.1:8787/. Hoặc chạy file `run-dashboard.cmd` ở thư m�
 - Lấy toàn bộ trang đề tài và kiểm tra số bản ghi, mã đề tài trùng, số phiếu, phân trang.
 - Sắp xếp theo số phiếu tăng/giảm, mã hoặc tên. Có thể nhấn tiêu đề cột BÌNH CHỌN để đảo chiều.
 - Tìm tên, mã, tác giả (hỗ trợ tìm không dấu), lọc lĩnh vực và phân trang 25 đề tài.
-- Thống kê toàn cuộc thi, thứ hạng có xử lý bằng phiếu, biểu đồ 5 đề tài cao nhất trong danh sách đang lọc.
+- Thống kê toàn cuộc thi; chọn lĩnh vực để xem hạng trong lĩnh vực đó, chọn tất cả để xem hạng toàn cuộc thi. Các đề tài bằng phiếu có cùng hạng. Tìm kiếm và đổi thứ tự hiển thị vẫn giữ đúng hạng trong phạm vi đã chọn. Biểu đồ hiển thị 5 đề tài cao nhất trong danh sách đang lọc; CSV dùng cùng phạm vi hạng với bảng.
 - Nút **Cập nhật dữ liệu** lấy dữ liệu mới. Giới hạn giữa các lần cập nhật thành công là 10 giây. Dữ liệu không tự cập nhật nền.
 - Khi cập nhật lỗi, giữ dữ liệu hoàn chỉnh gần nhất trong trang. Trình duyệt lưu bản thành công gần nhất để phục hồi khi mở lại và kết nối được danh sách cuộc thi.
 - Xuất CSV UTF-8 có BOM, tương thích tiếng Việt trong Excel; xuất toàn bộ kết quả đang lọc theo thứ tự đang chọn, bao gồm thời điểm cập nhật.
