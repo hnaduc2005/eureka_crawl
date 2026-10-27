@@ -7,10 +7,10 @@
 1. Đăng nhập [Vercel](https://vercel.com/new).
 2. Chọn **Add New → Project**, kết nối GitHub nếu chưa có.
 3. Import repository **hnaduc2005/eureka_crawl**.
-4. Trong **Root Directory**, nhấn **Edit** và chọn **vote-dashboard**.
+4. Trong **Root Directory**, giữ thư mục gốc của repository: **để trống hoặc `.`**.
 5. Chọn **Framework Preset: Other**.
 
-Vercel đọc cấu hình trong [`vote-dashboard/vercel.json`](vote-dashboard/vercel.json). Root Directory phải trỏ đến thư mục này để nhận đúng `package.json`, `api/` và cấu hình build. [Tài liệu Root Directory và build](https://vercel.com/docs/builds/configure-a-build).
+Vercel đọc [`vercel.json`](vercel.json), `package.json` và hai entrypoint trong `api/` ở thư mục gốc. Nếu project trước đó đã đặt Root Directory là `vote-dashboard`, vẫn có thể giữ nguyên: repo hỗ trợ cả hai cách. [Tài liệu Root Directory và build](https://vercel.com/docs/builds/configure-a-build).
 
 ## 2. Kiểm tra cấu hình
 
@@ -18,7 +18,7 @@ Vercel đọc cấu hình trong [`vote-dashboard/vercel.json`](vote-dashboard/ve
 | --- | --- |
 | Repository | `hnaduc2005/eureka_crawl` |
 | Production Branch | `main` |
-| Root Directory | **`vote-dashboard`** |
+| Root Directory | **Để trống hoặc `.`**; `vote-dashboard` cũng được hỗ trợ |
 | Framework Preset | **Other** |
 | Build Command | **`npm run build:vercel`** |
 | Output Directory | **`public`** |
@@ -50,7 +50,7 @@ Không thêm `PORT`, `API_KEY`, `DATABASE_URL` hay `TOKEN`. Trang nguồn dùng 
 
 Hai endpoint `api/competitions.js` và `api/snapshot.js` dùng giao diện Web Standard `Request`/`Response` của [Vercel Node.js Functions](https://vercel.com/docs/functions/runtimes/node-js). Không cần chạy `npm start` trên Vercel.
 
-Nếu đã tạo project từ bản repo cũ: vào **Settings → Build and Deployment**, sửa Root Directory và kiểm tra các giá trị trên; sau đó vào **Deployments → Redeploy** deployment thuộc nhánh `main`. Khi chọn commit để triển khai, dùng commit mới nhất có `vote-dashboard/vercel.json` và thư mục `vote-dashboard/api`.
+Nếu đã tạo project từ bản repo cũ: vào **Settings → Build and Deployment**, kiểm tra các giá trị trên. Dùng deployment của commit mới nhất trên nhánh `main`, có `package.json`, `vercel.json` và thư mục `api/` ở gốc repo. Sau khi mã được đẩy lên GitHub, Vercel thường tạo deployment mới theo liên kết Git; theo dõi deployment đó. Thao tác Redeploy trên một deployment cũ có thể dùng lại chính commit cũ.
 
 ## 4. Khi cập nhật mã nguồn
 
@@ -59,18 +59,18 @@ Project được kết nối GitHub sẽ triển khai lại theo cấu hình Git
 Để kiểm tra trước khi đẩy code:
 
 ```powershell
-cd vote-dashboard
 npm test
 npm run build:vercel
 ```
 
-Build tạo `public/index.html` và `public/favicon.svg`; hai API được Vercel đóng gói từ thư mục `api/`. Build không gọi trang nguồn nên vẫn hoàn thành khi trang bình chọn tạm ngừng hoạt động.
+Chạy các lệnh trên từ thư mục gốc repo. Build tạo `public/index.html` và `public/favicon.svg` ở gốc; hai API được Vercel đóng gói từ thư mục `api/`. Nếu chọn Root Directory là `vote-dashboard`, build và API tương ứng được dùng trong thư mục đó. Build không gọi trang nguồn nên vẫn hoàn thành khi trang bình chọn tạm ngừng hoạt động.
 
 ## Xử lý lỗi thường gặp
 
 | Hiện tượng | Kiểm tra |
 | --- | --- |
-| 404 ở trang chủ hoặc API | Root Directory phải là `vote-dashboard`; dùng commit mới nhất; Framework là Other; không thêm rewrite mọi đường dẫn về `index.html` |
+| `ENOENT /vercel/path0/package.json` | Deployment đang dùng bản cũ thiếu `package.json` ở gốc; triển khai commit mới nhất trên `main`, có cấu hình hỗ trợ build từ gốc repo |
+| 404 ở trang chủ hoặc API | Root Directory để trống/`.` hoặc `vote-dashboard`; dùng commit mới nhất; Framework là Other; không thêm rewrite mọi đường dẫn về `index.html` |
 | Không tìm thấy Output Directory | Build Command phải là `npm run build:vercel`, Output Directory là `public`, không dùng `dist` |
 | API trả JSON báo không kết nối được trang bình chọn | Trang nguồn đang lỗi hoặc không truy cập được từ hạ tầng Vercel; kiểm tra trang nguồn, thử cập nhật lại và xem Runtime Logs |
 | API trả 429 | Trang nguồn đang giới hạn truy cập; chờ rồi thử lại |

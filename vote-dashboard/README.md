@@ -4,7 +4,7 @@ Crawler và dashboard lấy số phiếu công khai từ https://binhchon.khoaho
 
 ## Deploy Vercel
 
-Đọc [hướng dẫn deploy](../DEPLOY_VERCEL.md). Khi import repo, chọn **Root Directory = `vote-dashboard`**, **Framework Preset = Other**. File `vercel.json` đã đặt build `npm run build:vercel`, output `public`, Fluid compute và giới hạn 300 giây cho API. Runtime Node.js 22.x được chọn trong `package.json`. **Không cần Environment Variables.**
+Đọc [hướng dẫn deploy](../DEPLOY_VERCEL.md). Khi import repo, có thể giữ **Root Directory trống hoặc `.`**, **Framework Preset = Other**. Cấu hình ở gốc repo sẽ build giao diện và hai API. Nếu đã chọn **Root Directory = `vote-dashboard`**, vẫn giữ được cách này: thư mục ứng dụng cũng có cấu hình riêng. Cả hai cách đều dùng build `npm run build:vercel`, output `public`, Fluid compute và giới hạn 300 giây cho API. Runtime Node.js 22.x được chọn trong `package.json`. **Không cần Environment Variables.**
 
 `api/competitions.js` và `api/snapshot.js` là entrypoint của Vercel. Build tạo giao diện từ cùng nguồn `worker/index.js`, không gọi trang nguồn khi build. Cache server nằm trong bộ nhớ từng instance; dữ liệu không lưu thành file trên Vercel. Các file JSON/CSV trong `data/` chỉ được tạo khi chạy crawler riêng trên máy.
 

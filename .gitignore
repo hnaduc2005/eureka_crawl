@@ -1,2 +1,7 @@
 .research/
 eureka-vote-observer.tar.gz
+public/
+.vercel/
+node_modules/
+.env
+.env.*.local

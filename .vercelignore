@@ -1,0 +1,10 @@
+.research/
+vote-dashboard/.openai/
+vote-dashboard/data/
+vote-dashboard/dist/
+vote-dashboard/public/
+vote-dashboard/tests/
+*.log
+*.tar.gz
+.env
+.env.*.local

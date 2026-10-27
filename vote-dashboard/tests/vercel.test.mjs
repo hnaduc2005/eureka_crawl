@@ -7,8 +7,12 @@ import vm from 'node:vm';
 import { buildVercel } from '../scripts/build-vercel.mjs';
 import competitionsHandler from '../api/competitions.js';
 import snapshotHandler from '../api/snapshot.js';
+import rootCompetitionsHandler from '../../api/competitions.js';
+import rootSnapshotHandler from '../../api/snapshot.js';
+import { buildRootVercel } from '../../scripts/build-vercel.mjs';
 
-test('Vercel build produces the working dashboard and favicon without network access', async t => {
+for (const [mode, build] of [['repository root', buildRootVercel], ['app subdirectory', buildVercel]]) {
+test('Vercel build from ' + mode + ' produces the dashboard and favicon without network access', async t => {
   const tempRoot = await realpath(tmpdir());
   const directory = await mkdtemp(join(tempRoot, 'eureka-vercel-'));
   t.after(async () => {
@@ -18,7 +22,7 @@ test('Vercel build produces the working dashboard and favicon without network ac
     await rm(target, { recursive: true, force: true });
   });
   const network = t.mock.method(globalThis, 'fetch', () => { throw new Error('Build must be offline'); });
-  await buildVercel(directory);
+  await build(directory);
   const html = await readFile(join(directory, 'index.html'), 'utf8');
   assert.match(html, /<html lang="vi">/);
   const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
@@ -28,10 +32,15 @@ test('Vercel build produces the working dashboard and favicon without network ac
   assert.match(await readFile(join(directory, 'favicon.svg'), 'utf8'), /<svg/);
   assert.equal(network.mock.callCount(), 0);
 });
+}
 
-test('Vercel endpoints return complete live data and preserve snapshot query parameters', async t => {
+for (const [mode, competitions, snapshotEndpoint] of [
+  ['root', rootCompetitionsHandler, rootSnapshotHandler],
+  ['subdirectory', competitionsHandler, snapshotHandler],
+]) {
+test('Vercel endpoints from ' + mode + ' return complete data and preserve query parameters', async t => {
   const requests = [];
-  const id = 'vercel-fixture';
+  const id = 'vercel-fixture-' + mode;
   const entries = [0, 1, 2].map(i => ({ id: i + 1, code: 'TEST-' + i, title: 'Đề tài ' + i, author: 'Nguyễn An', categoryId: 1, voteCount: i ? i * 100 : null }));
   t.mock.method(globalThis, 'fetch', async input => {
     const url = new URL(input);
@@ -44,10 +53,10 @@ test('Vercel endpoints return complete live data and preserve snapshot query par
     const page = Number(url.searchParams.get('page'));
     return Response.json({ items: entries.slice((page - 1) * 2, page * 2), page, pageSize: 2, totalCount: 3 });
   });
-  const competitions = await competitionsHandler.fetch(new Request('https://app.vercel.app/api/competitions'));
-  assert.equal(competitions.status, 200);
-  assert.deepEqual(await competitions.json(), [{ id, name: 'Cuộc thi thử nghiệm', isOpen: true }]);
-  const response = await snapshotHandler.fetch(new Request('https://app.vercel.app/api/snapshot?competition=' + id + '&refresh=1'));
+  const competitionResponse = await competitions.fetch(new Request('https://app.vercel.app/api/competitions'));
+  assert.equal(competitionResponse.status, 200);
+  assert.deepEqual(await competitionResponse.json(), [{ id, name: 'Cuộc thi thử nghiệm', isOpen: true }]);
+  const response = await snapshotEndpoint.fetch(new Request('https://app.vercel.app/api/snapshot?competition=' + id + '&refresh=1'));
   assert.equal(response.status, 200);
   assert.equal(response.headers.get('Cache-Control'), 'no-store');
   const snapshot = await response.json();
@@ -58,10 +67,11 @@ test('Vercel endpoints return complete live data and preserve snapshot query par
   assert.equal(snapshot.entries[2].voteCount, 200);
   assert.ok(requests.some(url => url.searchParams.get('page') === '2' && url.searchParams.get('pageSize') === '2'));
   const calls = requests.length;
-  const cached = await snapshotHandler.fetch(new Request('https://app.vercel.app/api/snapshot?competition=' + id));
+  const cached = await snapshotEndpoint.fetch(new Request('https://app.vercel.app/api/snapshot?competition=' + id));
   assert.deepEqual(await cached.json(), snapshot);
   assert.equal(requests.length, calls);
 });
+}
 
 test('Vercel snapshot route rejects missing parameters and non-GET methods without upstream calls', async t => {
   const network = t.mock.method(globalThis, 'fetch', () => { throw Error('Unexpected network'); });

@@ -22,4 +22,4 @@ Mở http://127.0.0.1:8787/. Dừng máy chủ bằng Ctrl+C.
 
 Xem [hướng dẫn deploy từng bước](DEPLOY_VERCEL.md).
 
-Import repository vào Vercel, chọn **Root Directory = `vote-dashboard`**, **Framework = Other**. Cấu hình build `npm run build:vercel`, output `public`, Node.js `22.x` đã có sẵn. **Environment Variables để trống.** Giao diện và API chạy cùng một project Vercel.
+Import repository vào Vercel, giữ **Root Directory trống hoặc `.`**, **Framework = Other**. Cấu hình build `npm run build:vercel`, output `public`, Node.js `22.x` đã có sẵn. **Environment Variables để trống.** Giao diện và API chạy cùng một project Vercel. Nếu project đã chọn Root Directory là `vote-dashboard`, cấu hình đó cũng được hỗ trợ.
